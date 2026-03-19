@@ -3,12 +3,13 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package javaapplication2;
-
+import java.util.ArrayList;
 /**
  *
  * @author Илья
  */
 public class tabs extends javax.swing.JFrame {
+    ArrayList<RecIntegral> list = new ArrayList<>();
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(tabs.class.getName());
 
@@ -30,6 +31,7 @@ public class tabs extends javax.swing.JFrame {
     private void initComponents() {
 
         jFrame1 = new javax.swing.JFrame();
+        jButton4 = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
@@ -42,6 +44,8 @@ public class tabs extends javax.swing.JFrame {
         jTextField1 = new javax.swing.JTextField();
         jTextField2 = new javax.swing.JTextField();
         jTextField3 = new javax.swing.JTextField();
+        jButton5 = new javax.swing.JButton();
+        jButton6 = new javax.swing.JButton();
 
         javax.swing.GroupLayout jFrame1Layout = new javax.swing.GroupLayout(jFrame1.getContentPane());
         jFrame1.getContentPane().setLayout(jFrame1Layout);
@@ -53,6 +57,9 @@ public class tabs extends javax.swing.JFrame {
             jFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 300, Short.MAX_VALUE)
         );
+
+        jButton4.setText("Добавить ");
+        jButton4.addActionListener(this::jButton4ActionPerformed);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -92,6 +99,12 @@ public class tabs extends javax.swing.JFrame {
 
         jLabel4.setText("Шаг");
 
+        jButton5.setText("Очистить таблицу");
+        jButton5.addActionListener(this::jButton5ActionPerformed);
+
+        jButton6.setText("Добавить в коллекцию");
+        jButton6.addActionListener(this::jButton6ActionPerformed);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -115,9 +128,15 @@ public class tabs extends javax.swing.JFrame {
                             .addComponent(jTextField1))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jButton2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jButton1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jButton3, javax.swing.GroupLayout.Alignment.TRAILING))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                    .addComponent(jButton6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(jButton5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addGap(18, 18, 18)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jButton2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jButton3, javax.swing.GroupLayout.Alignment.TRAILING)))
+                            .addComponent(jButton1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(22, 22, 22))))
         );
         layout.setVerticalGroup(
@@ -125,23 +144,27 @@ public class tabs extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton1))
-                .addGap(5, 5, 5)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton2))
-                .addGap(4, 4, 4)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel4)
-                    .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton3))
-                .addGap(37, 37, 37)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 272, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel2)
+                            .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jButton1))
+                        .addGap(5, 5, 5)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel3)
+                            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jButton2)
+                            .addComponent(jButton5))
+                        .addGap(4, 4, 4)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel4)
+                            .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jButton3))
+                        .addGap(37, 37, 37)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 272, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jButton6))
                 .addGap(3, 3, 3))
         );
 
@@ -151,6 +174,7 @@ public class tabs extends javax.swing.JFrame {
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         int selectedRow = jTable1.getSelectedRow();
         if (selectedRow != -1){
+            list.remove(selectedRow);
             javax.swing.table.DefaultTableModel model =
                     (javax.swing.table.DefaultTableModel) jTable1.getModel();
             model.removeRow(selectedRow);
@@ -161,19 +185,45 @@ public class tabs extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         try {
-            String np = jTextField1.getText();
-            String vp = jTextField2.getText();
-            String step = jTextField3.getText();
-            
+            double a = Double.parseDouble(jTextField1.getText());
+            double b = Double.parseDouble(jTextField2.getText());
+            double h = Double.parseDouble(jTextField3.getText());
+            RecIntegral rec = new RecIntegral(a,b,h,0);
+            list.add(rec);
             javax.swing.table.DefaultTableModel model = 
                     (javax.swing.table.DefaultTableModel) jTable1.getModel();
-            model.addRow(new Object[]{np, vp, step, ""});
+            model.addRow(new Object[]{a,b,h,0});
             
         } catch (Exception e){
             javax.swing.JOptionPane.showMessageDialog(this,"Error, no correct data!");
         }
         
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton4ActionPerformed
+
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        javax.swing.table.DefaultTableModel model = 
+                (javax.swing.table.DefaultTableModel) jTable1.getModel();
+        model.setRowCount(0);
+    }//GEN-LAST:event_jButton5ActionPerformed
+
+    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+        javax.swing.table.DefaultTableModel model= 
+                    (javax.swing.table.DefaultTableModel) jTable1.getModel();
+        model.setRowCount(0);
+        for (RecIntegral r : list){
+            
+            model.addRow(new Object[]{
+            r.a,
+            r.b,
+            r.h,
+            r.result,
+        });
+        }
+    }//GEN-LAST:event_jButton6ActionPerformed
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {
     int selectedRow = jTable1.getSelectedRow();
 
@@ -181,21 +231,12 @@ public class tabs extends javax.swing.JFrame {
         try {
             javax.swing.table.DefaultTableModel model =
                     (javax.swing.table.DefaultTableModel) jTable1.getModel();
+        
 
-            double a = Double.parseDouble(model.getValueAt(selectedRow, 0).toString());
-            double b = Double.parseDouble(model.getValueAt(selectedRow, 1).toString());
-            double h = Double.parseDouble(model.getValueAt(selectedRow, 2).toString());
-
-            if (a <= 0 || b <= 0) {
-                javax.swing.JOptionPane.showMessageDialog(this,
-                        "1/x undefined at x <= 0!");
-                return;
-            }
-
-            double result = calculateIntegral(a, b, h);
-
-            
+            RecIntegral rec = list.get(selectedRow);
+            double result = rec.calculate();                  
             model.setValueAt(result, selectedRow, 3);
+            
 
         } catch (Exception e) {
             javax.swing.JOptionPane.showMessageDialog(this,
@@ -206,32 +247,7 @@ public class tabs extends javax.swing.JFrame {
                 "Choose Row!");
     }
 }
-
-    private double calculateIntegral(double a, double b, double h) {
-    if (h <= 0) {
-        throw new IllegalArgumentException("Step must be > 0");
-    }
-
-    int n = (int) ((b - a) / h);
-    double sum = 0.0;
-    double x = a;
-
-    for (int i = 0; i < n; i++) {
-        double x1 = x;
-        double x2 = x + h;
-
-        if (x1 == 0 || x2 == 0) {
-            throw new IllegalArgumentException("1/x undefined at x = 0");
-        }
-
-        sum += (1.0 / x1 + 1.0 / x2) / 2.0 * h;
-        x += h;
-    }
-
-    return sum;
-}
-
-    /**
+        /**
      * @param args the command line arguments
      */
     public static void main(String args[]) {
@@ -244,6 +260,9 @@ public class tabs extends javax.swing.JFrame {
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton4;
+    private javax.swing.JButton jButton5;
+    private javax.swing.JButton jButton6;
     private javax.swing.JFrame jFrame1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
