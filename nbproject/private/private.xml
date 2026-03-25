@@ -5,6 +5,7 @@
         <group>
             <file>file:/D:/apache/labs/JavaApplication2/src/javaapplication2/tabs.java</file>
             <file>file:/D:/apache/labs/JavaApplication2/src/javaapplication2/RecIntegral.java</file>
+            <file>file:/D:/apache/labs/JavaApplication2/src/javaapplication2/InvalidRecIntegralException.java</file>
         </group>
     </open-files>
 </project-private>
