@@ -7,32 +7,61 @@ package javaapplication2;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.util.ArrayList;
+import java.util.List;
 /**
  *
  * @author admin
  */
 public class UdpServer {
-
-    private final InetAddress[] clientAddresses;
-    private final int[] clientPorts;
     private final int serverPort;
+    private final List<ClientInfo> clients = new ArrayList<>();
 
-    public UdpServer(InetAddress[] clientAddresses, int[] clientPorts, int serverPort) {
-        this.clientAddresses = clientAddresses;
-        this.clientPorts = clientPorts;
+    public UdpServer(int serverPort) {
         this.serverPort = serverPort;
-        System.out.println("Received: " + resp);
     }
 
+    // регистрация 
+    public void listenForClients() {
+        new Thread(() -> {
+            try (DatagramSocket socket = new DatagramSocket(serverPort)) {
+                System.out.println("Server listening for clients on port " + serverPort);
+
+                while (true) {
+                    byte[] buf = new byte[1024];
+                    DatagramPacket packet = new DatagramPacket(buf, buf.length);
+                    socket.receive(packet);
+
+                    String msg = new String(packet.getData(), 0, packet.getLength());
+
+                    if (msg.startsWith("HELLO")) {
+                        clients.add(new ClientInfo(packet.getAddress(), packet.getPort()));
+                        System.out.println("Client registered: " +
+                                packet.getAddress() + ":" + packet.getPort());
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }).start();
+    }
+
+    // распределённое вычисление
     public double calculateDistributed(double a, double b, double h) throws Exception {
 
-        int K = clientAddresses.length;
-        DatagramSocket socket = new DatagramSocket(serverPort);
+        int K = clients.size();
+        if (K == 0) {
+            throw new Exception("Нет подключённых клиентов!");
+        }
+
+        DatagramSocket socket = new DatagramSocket();
 
         double interval = (b - a) / K;
 
-        // ---------- отправка задач клиентам ----------
+        // отправляем задачи
         for (int i = 0; i < K; i++) {
+            ClientInfo c = clients.get(i);
+
             double start = a + i * interval;
             double end = (i == K - 1) ? b : start + interval;
 
@@ -42,14 +71,15 @@ public class UdpServer {
             DatagramPacket packet = new DatagramPacket(
                     data,
                     data.length,
-                    clientAddresses[i],
-                    clientPorts[i]
+                    c.addr,
+                    c.port
             );
 
+            System.out.println("Sending to " + c.addr + ":" + c.port + " → " + msg);
             socket.send(packet);
         }
 
-        // ---------- приём результатов ----------
+        //  принимаем результаты
         double total = 0;
 
         for (int i = 0; i < K; i++) {
@@ -58,6 +88,7 @@ public class UdpServer {
             socket.receive(packet);
 
             String resp = new String(packet.getData(), 0, packet.getLength());
+            System.out.println("Received: " + resp);
 
             if (resp.startsWith("RESULT;")) {
                 String[] parts = resp.split(";");
@@ -69,5 +100,15 @@ public class UdpServer {
         socket.close();
         return total;
     }
-    
+
+    // клиент
+    private static class ClientInfo {
+        InetAddress addr;
+        int port;
+
+        ClientInfo(InetAddress addr, int port) {
+            this.addr = addr;
+            this.port = port;
+        }
+    }
 }

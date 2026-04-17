@@ -26,12 +26,18 @@ public class tabs extends javax.swing.JFrame {
  
     private java.util.List<RecIntegral> list = new java.util.ArrayList<>();
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(tabs.class.getName());
+    private UdpServer server;
     /**
      * Creates new form tabs
      */
     public tabs() {
         initComponents();
+        
         button_calculate.addActionListener(this::button_calculate);
+        
+                
+        server = new UdpServer(6000);
+        server.listenForClients();
                 // Синхронизация таблицы и коллекции
         jTable1.getModel().addTableModelListener(e -> {
             int row = e.getFirstRow();
@@ -460,37 +466,31 @@ public class tabs extends javax.swing.JFrame {
             return;
         }
 
-        try {
-            RecIntegral rec = list.get(selectedRow);
+        // вычисление в отдельном потоке
+        new Thread(() -> {
+            try {
+                RecIntegral rec = list.get(selectedRow);
 
-            double a = rec.a;
-            double b = rec.b;
-            double h = rec.h;
+                double a = rec.a;
+                double b = rec.b;
+                double h = rec.h;
+                
+                double total = server.calculateDistributed(a, b, h);
 
-            // --- список клиентов ---
-            InetAddress[] clients = {
-                InetAddress.getByName("127.0.0.1"), // клиент 1
-                InetAddress.getByName("127.0.0.1")  // клиент 2
-            };
+                rec.result = total;
+                
+                javax.swing.SwingUtilities.invokeLater(() -> {
+                    javax.swing.table.DefaultTableModel model =
+                            (javax.swing.table.DefaultTableModel) jTable1.getModel();
+                    model.setValueAt(total, selectedRow, 4);
+                });
 
-            int[] ports = {5001, 5002}; // порты клиентов
-
-            // --- создаём сервер ---
-            UdpServer server = new UdpServer(clients, ports, 6000);
-
-            // --- запускаем распределённый расчёт ---
-            double total = server.calculateDistributed(a, b, h);
-
-            // --- сохраняем результат ---
-            rec.result = total;
-
-            javax.swing.table.DefaultTableModel model =
-                    (javax.swing.table.DefaultTableModel) jTable1.getModel();
-            model.setValueAt(total, selectedRow, 4);
-
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Calculation error: " + e.getMessage());
-        }
+            } catch (Exception e) {
+                javax.swing.SwingUtilities.invokeLater(() ->
+                        JOptionPane.showMessageDialog(this, "Calculation error: " + e.getMessage())
+                );
+            }
+        }).start();
 }
 
 
@@ -498,7 +498,7 @@ public class tabs extends javax.swing.JFrame {
     javax.swing.table.DefaultTableModel model =
             (javax.swing.table.DefaultTableModel) jTable1.getModel();
 
-    model.setRowCount(0); // очищаем таблицу
+    model.setRowCount(0);
 
     for (RecIntegral r : list) {
         model.addRow(new Object[]{
