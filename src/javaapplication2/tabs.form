@@ -78,10 +78,8 @@
                   <Group type="102" attributes="0">
                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
                           <Component id="button_load_binary" max="32767" attributes="0"/>
-                          <Group type="103" alignment="0" groupAlignment="1" max="-2" attributes="0">
-                              <Component id="button_save_text" alignment="0" max="32767" attributes="0"/>
-                              <Component id="button_load_text" alignment="0" max="32767" attributes="0"/>
-                          </Group>
+                          <Component id="button_save_text" alignment="0" max="32767" attributes="0"/>
+                          <Component id="button_load_text" alignment="0" max="32767" attributes="0"/>
                           <Component id="button_save_binary" alignment="0" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace pref="154" max="32767" attributes="0"/>
@@ -173,6 +171,9 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="&#x412;&#x44b;&#x447;&#x438;&#x441;&#x43b;&#x438;&#x442;&#x44c;"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="button_calculateActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="func_text">
       <Properties>
