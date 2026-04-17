@@ -4,27 +4,37 @@
  */
 package javaapplication2;
 
-public class RecIntegral {
+import java.io.Serializable;
+
+public class RecIntegral implements Serializable {
+    private static final long serialVersionUID = 1L;
+    
+    static int counter = 0;
+    int id;
     double a;
     double b;
     double h;
     double result;
 
-    public RecIntegral(double a, double b, double h, double result) throws InvalidRecIntegralException{
-        if (!isValid(a)|| !isValid(b) || !isValid(h)){
-            throw new InvalidRecIntegralException(
-            "Значения ВП, НП, и шаг должны быть числами от 0.000001 до 1000000)"
+    public RecIntegral(double a, double b, double h, double result) throws InvalidException{
+        if (!isValid(a) || !isValid(b) || !isValid(h)) {
+            throw new InvalidException(
+                    "Значения должны быть числами от 0.000001 до 1 000 000"
             );
         }
+        
         this.a = a;
         this.b = b;
         this.h = h;
         this.result = result;
+        this.id = counter++;
     }
-    private boolean isValid(double x){
-        return x >= 0.000001 && x<= 1000000;
+    
+    private boolean isValid(double x) {
+        return x >= 0.000001 && x <= 1_000_000;
     }
-        public double calculate() {
+
+    public double calculate() {
         if (h <= 0) {
             throw new IllegalArgumentException("Step must be > 0");
         }
@@ -52,4 +62,3 @@ public class RecIntegral {
 }
 
     
-
