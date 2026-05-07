@@ -4,33 +4,31 @@
  */
 package client;
 
+import java.util.concurrent.Callable;
+
 /**
  *
  * @author admin
  */
-public class IntegralThread extends Thread {
+public class IntegralTask implements Callable<Double> {
 
     private double a, b, h;
     private double result;
 
-    public IntegralThread(double a, double b, double h) {
+    public IntegralTask(double a, double b, double h) {
         this.a = a;
         this.b = b;
         this.h = h;
     }
 
     @Override
-    public void run() {
+    public Double call() throws Exception {
         double sum = 0;
         for (double x = a; x < b; x += h) {
             double x2 = Math.min(x + h, b);
             sum += (1.0 / x + 1.0 / x2) / 2.0 * (x2 - x);
         }
-        result = sum;
-    }
-
-    public double getResult() {
-        return result;
+        return sum;
     }
     
 }

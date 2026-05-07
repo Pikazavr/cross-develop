@@ -7,6 +7,9 @@ package client;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 /**
  *
@@ -16,16 +19,16 @@ public class UdpClient {
 
     public static void main(String[] args) throws Exception {
 
-        int listenPort = 5002; // порт клиента
+        int listenPort = 5001; // порт клиента
         DatagramSocket socket = new DatagramSocket(listenPort);
         
-        // ---------- регистрация клиента на сервере ----------
+        // регистрация клиента на сервере
         String hello = "HELLO";
         DatagramPacket helloPacket = new DatagramPacket(
                 hello.getBytes(),
                 hello.length(),
-                InetAddress.getByName("127.0.0.1"), // адрес сервера
-                6000                                 // порт сервера
+                InetAddress.getByName("127.0.0.1"), 
+                6000
         );
         socket.send(helloPacket);
 
@@ -35,7 +38,7 @@ public class UdpClient {
 
         while (true) {
 
-            // ---------- получение задачи ----------
+            // получение задачи 
             byte[] buf = new byte[1024];
             DatagramPacket packet = new DatagramPacket(buf, buf.length);
             socket.receive(packet);
@@ -55,27 +58,39 @@ public class UdpClient {
                 if (p.startsWith("h=")) h = Double.parseDouble(p.substring(2));
             }
 
-            // ---------- вычисление ----------
-            double result = calculateIntegralMultithread(a, b, h);
-
-            // ---------- отправка результата ----------
-            String resp = "RESULT;value=" + result;
-            byte[] out = resp.getBytes();
-
-            DatagramPacket respPacket = new DatagramPacket(
-                    out,
-                    out.length,
-                    packet.getAddress(),   // адрес отправителя TASK
-                    packet.getPort()       // порт отправителя TASK
-            );
-
-            socket.send(respPacket);
+            // вычисление с обработкой ошибок
+            try {
+                double result = calculateIntegralMultithread(a, b, h);
+                String resp = "RESULT;value=" + result;
+                byte[] out = resp.getBytes();
+                DatagramPacket respPacket = new DatagramPacket(
+                        out,
+                        out.length,
+                        packet.getAddress(),
+                        packet.getPort()
+                );
+                socket.send(respPacket);
+                System.out.println("Sent result: " + result);
+            } catch (Exception e) {
+                e.printStackTrace();
+                String resp = "RESULT;error=" + e.getMessage();
+                byte[] out = resp.getBytes();
+                DatagramPacket respPacket = new DatagramPacket(
+                        out,
+                        out.length,
+                        packet.getAddress(),
+                        packet.getPort()
+                );
+                socket.send(respPacket);
+                System.out.println("Sent error: " + e.getMessage());
+            }
         }
     }
 
-    private static double calculateIntegralMultithread(double a, double b, double h) {
+    private static double calculateIntegralMultithread(double a, double b, double h) throws Exception {
         int threadsCount = 2;
-        IntegralThread[] threads = new IntegralThread[threadsCount];
+        ExecutorService executor = Executors.newFixedThreadPool(threadsCount);
+        Future<Double>[] futures = new Future[threadsCount];
 
         double interval = (b - a) / threadsCount;
 
@@ -83,23 +98,17 @@ public class UdpClient {
             double start = a + i * interval;
             double end = (i == threadsCount - 1) ? b : start + interval;
 
-            threads[i] = new IntegralThread(start, end, h);
-            threads[i].start();
-        }
-
-        for (IntegralThread t : threads) {
-            try {
-                t.join();
-            } catch (InterruptedException ignored) {}
+            IntegralTask task = new IntegralTask(start, end, h);
+            futures[i] = executor.submit(task);
         }
 
         double total = 0;
-        for (IntegralThread t : threads) {
-            total += t.getResult();
+        for (Future<Double> future : futures) {
+            total += future.get(); // ждём результат
         }
 
+        executor.shutdown();
         return total;
     }
-
     
 }
