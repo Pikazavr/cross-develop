@@ -1,0 +1,3 @@
+kurs.server.ServerGameState
+kurs.server.ServerGameState$ServerBullet
+kurs.server.ServerGameState$ServerEnemy
